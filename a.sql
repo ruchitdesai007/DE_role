@@ -1,7 +1,7 @@
 SELECT
     team_name,
     gender,
-    year,
+    season AS year,  
     COUNT(*) AS total_matches,
     SUM(CASE WHEN outcome_result = 'won' THEN 1 ELSE 0 END) AS total_wins,
     ROUND(SUM(CASE WHEN outcome_result = 'won' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS win_percentage
@@ -12,6 +12,6 @@ JOIN
 JOIN
     deliveries d ON i.inning_id = d.inning_id
 WHERE
-    outcome_result IN ('won', 'no result') -- Exclude ties and other outcomes
+    outcome_result IN ('won', 'no result') 
 GROUP BY
-    team_name, gender, year;
+    team_name, gender, season;

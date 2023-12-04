@@ -2,8 +2,6 @@ WITH TeamWinPercentages AS (
     SELECT
         team_name,
         gender,
-        COUNT(*) AS total_matches,
-        SUM(CASE WHEN outcome_result = 'won' THEN 1 ELSE 0 END) AS total_wins,
         ROUND(SUM(CASE WHEN outcome_result = 'won' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS win_percentage
     FROM
         matches m
@@ -12,15 +10,16 @@ WITH TeamWinPercentages AS (
     JOIN
         deliveries d ON i.inning_id = d.inning_id
     WHERE
-        gender IN ('male', 'female')
-        AND season = '2019'
+        outcome_result = 'won'
+        AND year = '2019'
+        AND gender IN ('male', 'female')
     GROUP BY
         team_name, gender
 )
 
 SELECT
-    team_name,
     gender,
+    team_name,
     win_percentage
 FROM
     TeamWinPercentages
@@ -31,6 +30,8 @@ WHERE
             MAX(win_percentage) AS max_win_percentage
         FROM
             TeamWinPercentages
+        WHERE
+            gender IN ('male', 'female')
         GROUP BY
             gender
     );
